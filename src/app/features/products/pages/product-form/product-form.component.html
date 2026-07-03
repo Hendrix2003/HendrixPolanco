@@ -1,0 +1,156 @@
+<div class="app-shell">
+  <app-header />
+
+  <section class="form-panel">
+    <h1 class="form-title">{{ title }}</h1>
+
+    @if (errorMessage) {
+      <div class="alert" role="alert">
+        <span class="alert__icon" aria-hidden="true">!</span>
+        <p class="alert__text">{{ errorMessage }}</p>
+      </div>
+    }
+
+    @if (loadingProduct) {
+      <p class="loading-note">Cargando datos del producto...</p>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      <div class="grid">
+        <!-- ID -->
+        <div class="field">
+          <label class="field__label" for="id">ID</label>
+          <input
+            id="id"
+            type="text"
+            class="field__input"
+            [class.field__input--error]="shouldShowError('id')"
+            formControlName="id"
+            autocomplete="off"
+            [attr.aria-invalid]="shouldShowError('id')"
+            [attr.aria-describedby]="shouldShowError('id') ? 'id-error' : null"
+          />
+          @if (idPending) {
+            <span class="field__hint">Verificando disponibilidad...</span>
+          }
+          @if (shouldShowError('id')) {
+            <span class="field__error" id="id-error">{{ errorFor('id') }}</span>
+          }
+        </div>
+
+        <!-- Nombre -->
+        <div class="field">
+          <label class="field__label" for="name">Nombre</label>
+          <input
+            id="name"
+            type="text"
+            class="field__input"
+            [class.field__input--error]="shouldShowError('name')"
+            formControlName="name"
+            autocomplete="off"
+            [attr.aria-invalid]="shouldShowError('name')"
+            [attr.aria-describedby]="shouldShowError('name') ? 'name-error' : null"
+          />
+          @if (shouldShowError('name')) {
+            <span class="field__error" id="name-error">{{ errorFor('name') }}</span>
+          }
+        </div>
+
+        <!-- Descripcion -->
+        <div class="field field--full">
+          <label class="field__label" for="description">Descripcion</label>
+          <textarea
+            id="description"
+            class="field__input field__textarea"
+            [class.field__input--error]="shouldShowError('description')"
+            formControlName="description"
+            rows="3"
+            [attr.aria-invalid]="shouldShowError('description')"
+            [attr.aria-describedby]="shouldShowError('description') ? 'description-error' : null"
+          ></textarea>
+          @if (shouldShowError('description')) {
+            <span class="field__error" id="description-error">
+              {{ errorFor('description') }}
+            </span>
+          }
+        </div>
+
+        <!-- Logo -->
+        <div class="field field--full">
+          <label class="field__label" for="logo">Logo</label>
+          <input
+            id="logo"
+            type="text"
+            class="field__input"
+            [class.field__input--error]="shouldShowError('logo')"
+            formControlName="logo"
+            placeholder="assets-1.png"
+            autocomplete="off"
+            [attr.aria-invalid]="shouldShowError('logo')"
+            [attr.aria-describedby]="shouldShowError('logo') ? 'logo-error' : null"
+          />
+          @if (shouldShowError('logo')) {
+            <span class="field__error" id="logo-error">{{ errorFor('logo') }}</span>
+          }
+        </div>
+
+        <!-- Fecha de liberacion -->
+        <div class="field">
+          <label class="field__label" for="dateRelease">Fecha de liberacion</label>
+          <input
+            id="dateRelease"
+            type="date"
+            class="field__input"
+            [class.field__input--error]="shouldShowError('dateRelease')"
+            formControlName="dateRelease"
+            [attr.aria-invalid]="shouldShowError('dateRelease')"
+            [attr.aria-describedby]="shouldShowError('dateRelease') ? 'release-error' : null"
+          />
+          @if (shouldShowError('dateRelease')) {
+            <span class="field__error" id="release-error">
+              {{ errorFor('dateRelease') }}
+            </span>
+          }
+        </div>
+
+        <!-- Fecha de revision (derivada, deshabilitada) -->
+        <div class="field">
+          <label class="field__label" for="dateRevision">Fecha de revision</label>
+          <input
+            id="dateRevision"
+            type="date"
+            class="field__input field__input--readonly"
+            formControlName="dateRevision"
+            aria-describedby="revision-hint"
+          />
+          <span class="field__hint" id="revision-hint">
+            Se calcula automaticamente: un anio despues de la liberacion.
+          </span>
+        </div>
+      </div>
+
+      <!-- D3: acciones al pie, boton principal a la derecha -->
+      <div class="actions">
+        <button
+          type="button"
+          class="btn btn--ghost"
+          (click)="onReset()"
+          [disabled]="submitting"
+        >
+          Reiniciar
+        </button>
+        <button
+          type="submit"
+          class="btn btn--accent"
+          [disabled]="submitting || form.invalid"
+        >
+          {{ submitting ? 'Guardando...' : isEditMode ? 'Actualizar' : 'Agregar' }}
+        </button>
+      </div>
+
+      <button type="button" class="link-back" (click)="onCancel()">
+        Volver al listado
+      </button>
+    </form>
+  </section>
+</div>

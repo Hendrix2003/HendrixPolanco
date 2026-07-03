@@ -1,0 +1,101 @@
+<div class="app-shell">
+  <app-header />
+
+  <section class="panel">
+    <div class="toolbar">
+      <app-product-search [value]="searchTerm" (search)="onSearch($event)" />
+
+      <button type="button" class="btn-add" (click)="onAdd()">Agregar</button>
+    </div>
+
+    @if (errorMessage) {
+      <div class="alert" role="alert">
+        <span class="alert__icon" aria-hidden="true">!</span>
+        <div class="alert__body">
+          <p class="alert__text">{{ errorMessage }}</p>
+          <button type="button" class="alert__retry" (click)="loadProducts()">
+            Reintentar
+          </button>
+        </div>
+      </div>
+    }
+
+    @if (loading) {
+      <app-skeleton-loader [rows]="pageSize" />
+    } @else if (isEmpty) {
+      <div class="empty">
+        <p class="empty__title">No hay productos para mostrar</p>
+        <p class="empty__hint">
+          @if (searchTerm) {
+            No se encontraron coincidencias para "{{ searchTerm }}".
+          } @else {
+            Registra tu primer producto financiero con el boton Agregar.
+          }
+        </p>
+      </div>
+    } @else if (!errorMessage) {
+      <app-product-table
+        [products]="pagedProducts"
+        (edit)="onEdit($event)"
+        (remove)="onRequestDelete($event)"
+      />
+
+      <div class="footer">
+        <span class="footer__count">{{ resultCount }} Resultados</span>
+
+        <div class="footer__controls">
+          @if (totalPageCount > 1) {
+            <nav class="pager" aria-label="Paginacion">
+              <button
+                type="button"
+                class="pager__btn"
+                [disabled]="currentPage === 1"
+                (click)="goToPage(currentPage - 1)"
+                aria-label="Pagina anterior"
+              >
+                &#8249;
+              </button>
+
+              @for (page of pageNumbers; track page) {
+                <button
+                  type="button"
+                  class="pager__btn"
+                  [class.pager__btn--active]="page === currentPage"
+                  [attr.aria-current]="page === currentPage ? 'page' : null"
+                  (click)="goToPage(page)"
+                >
+                  {{ page }}
+                </button>
+              }
+
+              <button
+                type="button"
+                class="pager__btn"
+                [disabled]="currentPage === totalPageCount"
+                (click)="goToPage(currentPage + 1)"
+                aria-label="Pagina siguiente"
+              >
+                &#8250;
+              </button>
+            </nav>
+          }
+
+          <app-page-size-selector
+            [value]="pageSize"
+            [options]="pageSizeOptions"
+            (sizeChange)="onPageSizeChange($event)"
+          />
+        </div>
+      </div>
+    }
+  </section>
+</div>
+
+@if (productToDelete) {
+  <app-confirm-dialog
+    [message]="deleteMessage"
+    [busy]="deleting"
+    (confirm)="onConfirmDelete()"
+    (cancel)="onCancelDelete()"
+  />
+}

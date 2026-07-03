@@ -1,0 +1,23 @@
+# Dependencias
+/node_modules
+
+# Compilacion
+/dist
+/out-tsc
+/tmp
+
+# Cobertura de pruebas
+/coverage
+
+# IDE
+/.idea
+/.vscode
+*.swp
+.DS_Store
+
+# Cache de Angular
+/.angular/cache
+
+# Logs
+npm-debug.log*
+yarn-error.log*
